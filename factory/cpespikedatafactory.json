@@ -1,0 +1,9 @@
+{
+	"name": "cpespikedatafactory",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "50368842-2d5d-4868-b095-2c8dca394977",
+		"tenantId": "7fbe498c-e540-4556-b198-7b2e16bff9b0"
+	}
+}
