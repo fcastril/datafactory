@@ -1,0 +1,15 @@
+{
+	"name": "DestinationDataset_fqs",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CosmosDb",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "CosmosDbSqlApiCollection",
+		"schema": {},
+		"typeProperties": {
+			"collectionName": "14d6fe63-1ca6-4987-8d33-0eb926bd4dfd"
+		}
+	}
+}
