@@ -1,0 +1,28 @@
+{
+	"name": "CSV",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "StorageLinkedServer",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "inData.csv",
+				"folderPath": "input",
+				"container": "ctnspikedatafactory"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"type": "String"
+			}
+		]
+	}
+}
