@@ -1,0 +1,65 @@
+{
+	"name": "SourceDataset_5pl",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "StorageLinkedServer",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "inData.csv",
+				"folderPath": "input",
+				"container": "ctnspikedatafactory"
+			},
+			"columnDelimiter": ";",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Escenario",
+				"type": "String"
+			},
+			{
+				"name": "CuentaAuxiliar",
+				"type": "String"
+			},
+			{
+				"name": "CuentaObjeto",
+				"type": "String"
+			},
+			{
+				"name": "Anio",
+				"type": "String"
+			},
+			{
+				"name": "Mes",
+				"type": "String"
+			},
+			{
+				"name": "Libro",
+				"type": "String"
+			},
+			{
+				"name": "CentroResponsabilidad",
+				"type": "String"
+			},
+			{
+				"name": "CodigoEmpresa",
+				"type": "String"
+			},
+			{
+				"name": "CodigoCompania",
+				"type": "String"
+			},
+			{
+				"name": "ValorOrigen",
+				"type": "String"
+			}
+		]
+	}
+}
