@@ -1,0 +1,157 @@
+{
+	"name": "CopyPipeline_fqs",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy_fqs",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "ctnspikedatafactory/input/inData.csv"
+					},
+					{
+						"name": "Destination",
+						"value": "14d6fe63-1ca6-4987-8d33-0eb926bd4dfd"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings",
+							"skipLineCount": 0
+						}
+					},
+					"sink": {
+						"type": "CosmosDbSqlApiSink",
+						"writeBehavior": "insert"
+					},
+					"enableStaging": false,
+					"validateDataConsistency": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "Escenario",
+									"type": "String"
+								},
+								"sink": {
+									"path": "Escenario"
+								}
+							},
+							{
+								"source": {
+									"name": "CuentaAuxiliar",
+									"type": "String"
+								},
+								"sink": {
+									"path": "CuentaAuxiliar"
+								}
+							},
+							{
+								"source": {
+									"name": "CuentaObjeto",
+									"type": "String"
+								},
+								"sink": {
+									"path": "CuentaObjeto"
+								}
+							},
+							{
+								"source": {
+									"name": "Anio",
+									"type": "String"
+								},
+								"sink": {
+									"path": "Anio"
+								}
+							},
+							{
+								"source": {
+									"name": "Mes",
+									"type": "String"
+								},
+								"sink": {
+									"path": "Mes"
+								}
+							},
+							{
+								"source": {
+									"name": "Libro",
+									"type": "String"
+								},
+								"sink": {
+									"path": "Libro"
+								}
+							},
+							{
+								"source": {
+									"name": "CentroResponsabilidad",
+									"type": "String"
+								},
+								"sink": {
+									"path": "CentroResponsabilidad"
+								}
+							},
+							{
+								"source": {
+									"name": "CodigoEmpresa",
+									"type": "String"
+								},
+								"sink": {
+									"path": "CodigoEmpresa"
+								}
+							},
+							{
+								"source": {
+									"name": "CodigoCompania",
+									"type": "String"
+								},
+								"sink": {
+									"path": "CodigoCompania"
+								}
+							},
+							{
+								"source": {
+									"name": "ValorOrigen",
+									"type": "String"
+								},
+								"sink": {
+									"path": "ValorOrigen"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_fqs",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_fqs",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": []
+	}
+}
