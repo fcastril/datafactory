@@ -1,0 +1,11 @@
+{
+	"name": "DestinationDataset_5pl",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "MongoDb",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "MongoDbV2Collection"
+	}
+}
