@@ -1,0 +1,191 @@
+{
+	"name": "StorateToSQL",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy_e5d",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "ctnspikedatafactory/input/inData.csv"
+					},
+					{
+						"name": "Destination",
+						"value": "dbo.SpikeImport"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings",
+							"skipLineCount": 0
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false,
+					"validateDataConsistency": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "Escenario",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Escenario",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "CuentaAuxiliar",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "CuentaAuxiliar",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "CuentaObjeto",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "CuentaObjeto",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Anio",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Anio",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Mes",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Mes",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Libro",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Libro",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "CentroResponsabilidad",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "CentroResponsabilidad",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "CodigoEmpresa",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "CodigoEmpresa",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "CodigoCompania",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "CodigoCompania",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "ValorOrigen",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "ValorOrigen",
+									"type": "Double",
+									"physicalType": "float"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_e5d",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_e5d",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": []
+	}
+}
