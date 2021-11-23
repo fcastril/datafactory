@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy_9vz",
+				"name": "StorageToMongo",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
