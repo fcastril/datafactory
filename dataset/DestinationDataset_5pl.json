@@ -6,6 +6,9 @@
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
-		"type": "MongoDbV2Collection"
+		"type": "MongoDbV2Collection",
+		"typeProperties": {
+			"collection": "spikeReales"
+		}
 	}
 }
