@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy_e5d",
+				"name": "StorateToSQL",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
