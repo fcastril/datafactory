@@ -1,5 +1,5 @@
 {
-	"name": "CopyPipeline_9vz",
+	"name": "StorageToMongo",
 	"properties": {
 		"activities": [
 			{

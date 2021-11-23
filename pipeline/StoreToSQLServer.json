@@ -1,5 +1,5 @@
 {
-	"name": "CopyPipeline_fqs",
+	"name": "StoreToSQLServer",
 	"properties": {
 		"activities": [
 			{
