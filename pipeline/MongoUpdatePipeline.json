@@ -19,7 +19,10 @@
 						"referenceName": "MongoUpdate",
 						"type": "DataFlowReference",
 						"parameters": {
-							"TRM": "1.00"
+							"TRM": {
+								"value": "@pipeline().parameters.TRMParam",
+								"type": "Expression"
+							}
 						}
 					},
 					"compute": {
