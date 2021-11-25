@@ -1,0 +1,35 @@
+{
+	"name": "MongoUpdate",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DestinationDataset_fqs",
+						"type": "DatasetReference"
+					},
+					"name": "Mongo"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DestinationDataset_fqs",
+						"type": "DatasetReference"
+					},
+					"name": "MontoTO"
+				}
+			],
+			"transformations": [
+				{
+					"name": "UpdateField"
+				},
+				{
+					"name": "TRM"
+				}
+			],
+			"script": "parameters{\n\tTRM as double (1.00)\n}\nsource(output(\n\t\tAnio as string,\n\t\tCentroResponsabilidad as string,\n\t\tCodigoCompania as string,\n\t\tCodigoEmpresa as string,\n\t\tCuentaAuxiliar as string,\n\t\tCuentaObjeto as string,\n\t\tEscenario as string,\n\t\tLibro as string,\n\t\tMes as string,\n\t\tValorOrigen as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'document',\n\tpartitionBy('roundRobin', 2)) ~> Mongo\nMongo alterRow(updateIf(true())) ~> UpdateField\nUpdateField derive(ValorOrigenSensibilidad = ValorOrigen/$TRM) ~> TRM\nTRM sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:true,\n\tformat: 'document',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> MontoTO"
+		}
+	}
+}
