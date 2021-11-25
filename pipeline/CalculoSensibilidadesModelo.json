@@ -19,7 +19,22 @@
 						"referenceName": "TRMSensiilidad",
 						"type": "DataFlowReference",
 						"parameters": {
-							"trm": "1.00"
+							"trm": {
+								"value": "@pipeline().parameters.trmIN",
+								"type": "Expression"
+							},
+							"Empresa": {
+								"value": "'@{pipeline().parameters.Empresa}'",
+								"type": "Expression"
+							},
+							"CuentaAuxiliar": {
+								"value": "'@{pipeline().parameters.CuentaAuxiliar}'",
+								"type": "Expression"
+							},
+							"CuentaObjeto": {
+								"value": "'@{pipeline().parameters.CuentaObjeto}'",
+								"type": "Expression"
+							}
 						}
 					},
 					"compute": {
