@@ -9,6 +9,11 @@
 		"type": "AzureSqlTable",
 		"schema": [
 			{
+				"name": "Id",
+				"type": "int",
+				"precision": 10
+			},
+			{
 				"name": "Escenario",
 				"type": "nvarchar"
 			},
@@ -46,6 +51,11 @@
 			},
 			{
 				"name": "ValorOrigen",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "ValorOrigenSensibilidad",
 				"type": "float",
 				"precision": 15
 			}
