@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "dataflow1",
+				"name": "TRMSensiilidad",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -19,14 +19,11 @@
 						"referenceName": "TRMSensiilidad",
 						"type": "DataFlowReference",
 						"parameters": {
-							"trm": {
-								"value": "@pipeline().parameters.trmIN",
-								"type": "Expression"
-							}
+							"trm": "1.00"
 						}
 					},
 					"compute": {
-						"coreCount": 16,
+						"coreCount": 8,
 						"computeType": "General"
 					},
 					"traceLevel": "Fine"
