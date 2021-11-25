@@ -30,6 +30,12 @@
 				}
 			}
 		],
+		"parameters": {
+			"TRMParam": {
+				"type": "string",
+				"defaultValue": "1.00"
+			}
+		},
 		"annotations": []
 	}
 }
