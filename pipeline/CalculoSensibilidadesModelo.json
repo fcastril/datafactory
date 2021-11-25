@@ -1,5 +1,5 @@
 {
-	"name": "pipeline1",
+	"name": "CalculoSensibilidadesModelo",
 	"properties": {
 		"activities": [
 			{
@@ -37,6 +37,15 @@
 			"trmIN": {
 				"type": "float",
 				"defaultValue": 1000
+			},
+			"Empresa": {
+				"type": "string"
+			},
+			"CuentaObjeto": {
+				"type": "string"
+			},
+			"CuentaAuxiliar": {
+				"type": "string"
 			}
 		},
 		"annotations": []
