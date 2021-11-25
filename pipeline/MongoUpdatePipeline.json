@@ -1,0 +1,35 @@
+{
+	"name": "MongoUpdatePipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "MongoUpdate",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "1.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "MongoUpdate",
+						"type": "DataFlowReference",
+						"parameters": {
+							"TRM": "1.00"
+						}
+					},
+					"compute": {
+						"coreCount": 16,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": []
+	}
+}
