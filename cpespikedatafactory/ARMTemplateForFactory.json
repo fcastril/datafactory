@@ -1330,8 +1330,8 @@
 				},
 				"parameters": {
 					"TRMParam": {
-						"type": "string",
-						"defaultValue": "1.00"
+						"type": "float",
+						"defaultValue": 1
 					}
 				},
 				"annotations": []
