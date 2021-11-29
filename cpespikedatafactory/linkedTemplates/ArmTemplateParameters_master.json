@@ -20,11 +20,17 @@
 		"StorageLinkedServer_connectionString": {
 			"value": ""
 		},
+		"MongoDbSpikeDatafactory_connectionString": {
+			"value": ""
+		},
 		"MongoDb_properties_typeProperties_database": {
 			"value": "spikeTest"
 		},
 		"MongoDb2021_properties_typeProperties_database": {
 			"value": "spikeTest"
+		},
+		"MongoDbSpikeDatafactory_properties_typeProperties_database": {
+			"value": "spike"
 		},
 		"containerUri": {
 			"value": ""

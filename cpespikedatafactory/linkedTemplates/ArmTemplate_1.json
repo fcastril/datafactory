@@ -13,13 +13,48 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/MongoUpdatePipeline')]",
+			"name": "[concat(parameters('factoryName'), '/SQLAplicarSensibilidades')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable",
+								"type": "DatasetReference"
+							},
+							"name": "SQL"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTableNEW",
+								"type": "DatasetReference"
+							},
+							"name": "Mongo"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Sensibilidadades"
+						}
+					],
+					"script": "source(output(\n\t\tId as integer,\n\t\tEscenario as string,\n\t\tCuentaAuxiliar as string,\n\t\tCuentaObjeto as string,\n\t\tAnio as string,\n\t\tMes as string,\n\t\tLibro as string,\n\t\tCentroResponsabilidad as string,\n\t\tCodigoEmpresa as string,\n\t\tCodigoCompania as string,\n\t\tValorOrigen as double,\n\t\tValorOrigenSensibilidad as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table',\n\tpartitionBy('roundRobin', 2)) ~> SQL\nSQL alterRow(updateIf(true()),\n\tpartitionBy('roundRobin', 2)) ~> Sensibilidadades\nSensibilidadades sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tId as integer,\n\t\tEscenario as string,\n\t\tCuentaAuxiliar as string,\n\t\tCuentaObjeto as string,\n\t\tAnio as string,\n\t\tMes as string,\n\t\tLibro as string,\n\t\tCentroResponsabilidad as string,\n\t\tCodigoEmpresa as string,\n\t\tCodigoCompania as string,\n\t\tValorOrigen as double,\n\t\tValorOrigenSensibilidad as double\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> Mongo"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CalculoSensibilidadesModelo')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "MongoUpdate",
+						"name": "TRMSensiilidad",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
@@ -32,22 +67,34 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "MongoUpdate",
+								"referenceName": "TRMSensiilidad",
 								"type": "DataFlowReference",
 								"parameters": {
-									"TRM": {
-										"value": "@pipeline().parameters.TRMParam",
+									"trm": {
+										"value": "@pipeline().parameters.trmIN",
+										"type": "Expression"
+									},
+									"Empresa": {
+										"value": "'@{pipeline().parameters.Empresa}'",
+										"type": "Expression"
+									},
+									"CuentaAuxiliar": {
+										"value": "'@{pipeline().parameters.CuentaAuxiliar}'",
+										"type": "Expression"
+									},
+									"CuentaObjeto": {
+										"value": "'@{pipeline().parameters.CuentaObjeto}'",
 										"type": "Expression"
 									}
 								},
 								"datasetParameters": {
-									"Mongo": {},
-									"MontoTO": {}
+									"SQL": {},
+									"SQLOutput": {}
 								}
 							},
 							"staging": {},
 							"compute": {
-								"coreCount": 16,
+								"coreCount": 8,
 								"computeType": "General"
 							},
 							"traceLevel": "Fine"
@@ -59,14 +106,230 @@
 					"cancelAfter": {}
 				},
 				"parameters": {
-					"TRMParam": {
+					"trmIN": {
 						"type": "float",
-						"defaultValue": 1
+						"defaultValue": 1000
+					},
+					"Empresa": {
+						"type": "string"
+					},
+					"CuentaObjeto": {
+						"type": "string"
+					},
+					"CuentaAuxiliar": {
+						"type": "string"
 					}
 				},
 				"annotations": []
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQLToMongo')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SQLToMongo",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "SQLAplicarSensibilidades",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "MongoDbV2Sink",
+								"writeBatchTimeout": "00:30:00",
+								"writeBehavior": "insert"
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "Id",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "id"
+										}
+									},
+									{
+										"source": {
+											"name": "Escenario",
+											"type": "String"
+										},
+										"sink": {
+											"path": "Escenario"
+										}
+									},
+									{
+										"source": {
+											"name": "CuentaAuxiliar",
+											"type": "String"
+										},
+										"sink": {
+											"path": "CuentaAuxiliar"
+										}
+									},
+									{
+										"source": {
+											"name": "CuentaObjeto",
+											"type": "String"
+										},
+										"sink": {
+											"path": "CuentaObjeto"
+										}
+									},
+									{
+										"source": {
+											"name": "Anio",
+											"type": "String"
+										},
+										"sink": {
+											"path": "Anio"
+										}
+									},
+									{
+										"source": {
+											"name": "Mes",
+											"type": "String"
+										},
+										"sink": {
+											"path": "Mes"
+										}
+									},
+									{
+										"source": {
+											"name": "Libro",
+											"type": "String"
+										},
+										"sink": {
+											"path": "Libro"
+										}
+									},
+									{
+										"source": {
+											"name": "CentroResponsabilidad",
+											"type": "String"
+										},
+										"sink": {
+											"path": "CentroResponsabilidad"
+										}
+									},
+									{
+										"source": {
+											"name": "CodigoEmpresa",
+											"type": "String"
+										},
+										"sink": {
+											"path": "CodigoEmpresa"
+										}
+									},
+									{
+										"source": {
+											"name": "CodigoCompania",
+											"type": "String"
+										},
+										"sink": {
+											"path": "CodigoCompania"
+										}
+									},
+									{
+										"source": {
+											"name": "ValorOrigen",
+											"type": "Double"
+										},
+										"sink": {
+											"path": "ValorOrigen"
+										}
+									},
+									{
+										"source": {
+											"name": "ValorOrigenSensibilidad",
+											"type": "Double"
+										},
+										"sink": {
+											"path": "ValorOrigenSensibilidad"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "AzureSqlTable",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DestinationDataset_9vz",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "SQLAplicarSensibilidades",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "SQLAplicarSensibilidades",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"SQL": {},
+									"Mongo": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/SQLAplicarSensibilidades')]"
+			]
 		}
 	]
 }

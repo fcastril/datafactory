@@ -27,6 +27,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'StorageLinkedServer'"
 		},
+		"MongoDbSpikeDatafactory_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'MongoDbSpikeDatafactory'"
+		},
 		"MongoDb_properties_typeProperties_database": {
 			"type": "string",
 			"defaultValue": "spikeTest"
@@ -34,6 +38,10 @@
 		"MongoDb2021_properties_typeProperties_database": {
 			"type": "string",
 			"defaultValue": "spikeTest"
+		},
+		"MongoDbSpikeDatafactory_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "spike"
 		},
 		"containerUri": {
 			"type": "string",
@@ -77,11 +85,17 @@
 					"StorageLinkedServer_connectionString": {
 						"value": "[parameters('StorageLinkedServer_connectionString')]"
 					},
+					"MongoDbSpikeDatafactory_connectionString": {
+						"value": "[parameters('MongoDbSpikeDatafactory_connectionString')]"
+					},
 					"MongoDb_properties_typeProperties_database": {
 						"value": "[parameters('MongoDb_properties_typeProperties_database')]"
 					},
 					"MongoDb2021_properties_typeProperties_database": {
 						"value": "[parameters('MongoDb2021_properties_typeProperties_database')]"
+					},
+					"MongoDbSpikeDatafactory_properties_typeProperties_database": {
+						"value": "[parameters('MongoDbSpikeDatafactory_properties_typeProperties_database')]"
 					}
 				}
 			},

@@ -27,6 +27,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'StorageLinkedServer'"
 		},
+		"MongoDbSpikeDatafactory_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'MongoDbSpikeDatafactory'"
+		},
 		"MongoDb_properties_typeProperties_database": {
 			"type": "string",
 			"defaultValue": "spikeTest"
@@ -34,6 +38,10 @@
 		"MongoDb2021_properties_typeProperties_database": {
 			"type": "string",
 			"defaultValue": "spikeTest"
+		},
+		"MongoDbSpikeDatafactory_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "spike"
 		}
 	},
 	"variables": {
@@ -103,6 +111,20 @@
 				"type": "AzureBlobStorage",
 				"typeProperties": {
 					"connectionString": "[parameters('StorageLinkedServer_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MongoDbSpikeDatafactory')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "MongoDbV2",
+				"typeProperties": {
+					"connectionString": "[parameters('MongoDbSpikeDatafactory_connectionString')]",
+					"database": "[parameters('MongoDbSpikeDatafactory_properties_typeProperties_database')]"
 				}
 			},
 			"dependsOn": []
@@ -205,7 +227,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "MongoDb2021",
+					"referenceName": "MongoDbSpikeDatafactory",
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
@@ -216,7 +238,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/MongoDb2021')]"
+				"[concat(variables('factoryId'), '/linkedServices/MongoDbSpikeDatafactory')]"
 			]
 		},
 		{
@@ -299,26 +321,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/SQLServer')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DestinationDataset_fqs')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "CosmosDb",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "CosmosDbSqlApiCollection",
-				"schema": {},
-				"typeProperties": {
-					"collectionName": "14d6fe63-1ca6-4987-8d33-0eb926bd4dfd"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/CosmosDb')]"
 			]
 		},
 		{
@@ -599,6 +601,79 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/StorageLinkedServer')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTableNEW')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SQLServer",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Escenario",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CuentaAuxiliar",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CuentaObjeto",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Anio",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Mes",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Libro",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CentroResponsabilidad",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CodigoEmpresa",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CodigoCompania",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ValorOrigen",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "ValorOrigenSensibilidad",
+						"type": "float",
+						"precision": 15
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SpikeImportNew"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SQLServer')]"
 			]
 		},
 		{
@@ -1016,11 +1091,11 @@
 								}
 							},
 							"sink": {
-								"type": "CosmosDbSqlApiSink",
+								"type": "MongoDbV2Sink",
+								"writeBatchTimeout": "00:30:00",
 								"writeBehavior": "insert"
 							},
 							"enableStaging": false,
-							"validateDataConsistency": false,
 							"translator": {
 								"type": "TabularTranslator",
 								"mappings": [
@@ -1030,88 +1105,7 @@
 											"type": "String"
 										},
 										"sink": {
-											"path": "Escenario"
-										}
-									},
-									{
-										"source": {
-											"name": "CuentaAuxiliar",
-											"type": "String"
-										},
-										"sink": {
-											"path": "CuentaAuxiliar"
-										}
-									},
-									{
-										"source": {
-											"name": "CuentaObjeto",
-											"type": "String"
-										},
-										"sink": {
-											"path": "CuentaObjeto"
-										}
-									},
-									{
-										"source": {
-											"name": "Anio",
-											"type": "String"
-										},
-										"sink": {
-											"path": "Anio"
-										}
-									},
-									{
-										"source": {
-											"name": "Mes",
-											"type": "String"
-										},
-										"sink": {
-											"path": "Mes"
-										}
-									},
-									{
-										"source": {
-											"name": "Libro",
-											"type": "String"
-										},
-										"sink": {
-											"path": "Libro"
-										}
-									},
-									{
-										"source": {
-											"name": "CentroResponsabilidad",
-											"type": "String"
-										},
-										"sink": {
-											"path": "CentroResponsabilidad"
-										}
-									},
-									{
-										"source": {
-											"name": "CodigoEmpresa",
-											"type": "String"
-										},
-										"sink": {
-											"path": "CodigoEmpresa"
-										}
-									},
-									{
-										"source": {
-											"name": "CodigoCompania",
-											"type": "String"
-										},
-										"sink": {
-											"path": "CodigoCompania"
-										}
-									},
-									{
-										"source": {
-											"name": "ValorOrigen",
-											"type": "String"
-										},
-										"sink": {
-											"path": "ValorOrigen"
+											"path": "$"
 										}
 									}
 								]
@@ -1126,7 +1120,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "DestinationDataset_fqs",
+								"referenceName": "DestinationDataset_9vz",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -1141,11 +1135,52 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SourceDataset_fqs')]",
-				"[concat(variables('factoryId'), '/datasets/DestinationDataset_fqs')]"
+				"[concat(variables('factoryId'), '/datasets/DestinationDataset_9vz')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"name": "[concat(parameters('factoryName'), '/MongoUpdate')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SourceDataset_9vz",
+								"type": "DatasetReference"
+							},
+							"name": "Mongo"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTableNEW",
+								"type": "DatasetReference"
+							},
+							"name": "MontoTO"
+						}
+					],
+					"transformations": [
+						{
+							"name": "UpdateField"
+						},
+						{
+							"name": "TRM"
+						}
+					],
+					"script": "parameters{\n\tTRM as double (1.00)\n}\nsource(output(\n\t\tEscenario as string,\n\t\tCuentaAuxiliar as string,\n\t\tCuentaObjeto as string,\n\t\tAnio as string,\n\t\tMes as string,\n\t\tLibro as string,\n\t\tCentroResponsabilidad as string,\n\t\tCodigoEmpresa as string,\n\t\tCodigoCompania as string,\n\t\tValorOrigen as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tpartitionBy('roundRobin', 2)) ~> Mongo\nMongo alterRow(updateIf(true())) ~> UpdateField\nUpdateField derive(ValorOrigenSensibilidad = ValorOrigen) ~> TRM\nTRM sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tId as integer,\n\t\tEscenario as string,\n\t\tCuentaAuxiliar as string,\n\t\tCuentaObjeto as string,\n\t\tAnio as string,\n\t\tMes as string,\n\t\tLibro as string,\n\t\tCentroResponsabilidad as string,\n\t\tCodigoEmpresa as string,\n\t\tCodigoCompania as string,\n\t\tValorOrigen as double,\n\t\tValorOrigenSensibilidad as double\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> MontoTO"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SourceDataset_9vz')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTableNEW')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TRMSensiilidad')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -1171,115 +1206,17 @@
 					],
 					"transformations": [
 						{
-							"name": "AlterRow1"
+							"name": "UpdateROW"
 						},
 						{
 							"name": "TRMSensibilidad"
 						}
 					],
-					"script": "parameters{\n\ttrm as double (1.00)\n}\nsource(output(\n\t\tId as integer,\n\t\tEscenario as string,\n\t\tCuentaAuxiliar as string,\n\t\tCuentaObjeto as string,\n\t\tAnio as string,\n\t\tMes as string,\n\t\tLibro as string,\n\t\tCentroResponsabilidad as string,\n\t\tCodigoEmpresa as string,\n\t\tCodigoCompania as string,\n\t\tValorOrigen as double,\n\t\tValorOrigenSensibilidad as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> SQL\nSQL alterRow(updateIf(true()),\n\tpartitionBy('roundRobin', 2)) ~> AlterRow1\nAlterRow1 derive(ValorOrigenSensibilidad = ValorOrigen/$trm,\n\tpartitionBy('roundRobin', 2)) ~> TRMSensibilidad\nTRMSensibilidad sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tId as integer,\n\t\tEscenario as string,\n\t\tCuentaAuxiliar as string,\n\t\tCuentaObjeto as string,\n\t\tAnio as string,\n\t\tMes as string,\n\t\tLibro as string,\n\t\tCentroResponsabilidad as string,\n\t\tCodigoEmpresa as string,\n\t\tCodigoCompania as string,\n\t\tValorOrigen as double,\n\t\tValorOrigenSensibilidad as double\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['Id'],\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> SQLOutput"
+					"script": "parameters{\n\ttrm as double (1.00),\n\tEmpresa as string,\n\tCuentaAuxiliar as string,\n\tCuentaObjeto as string\n}\nsource(output(\n\t\tId as integer,\n\t\tEscenario as string,\n\t\tCuentaAuxiliar as string,\n\t\tCuentaObjeto as string,\n\t\tAnio as string,\n\t\tMes as string,\n\t\tLibro as string,\n\t\tCentroResponsabilidad as string,\n\t\tCodigoEmpresa as string,\n\t\tCodigoCompania as string,\n\t\tValorOrigen as double,\n\t\tValorOrigenSensibilidad as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> SQL\nSQL alterRow(updateIf(CodigoEmpresa==$Empresa||CuentaAuxiliar==$CuentaAuxiliar||CuentaObjeto==$CuentaObjeto),\n\tpartitionBy('roundRobin', 2)) ~> UpdateROW\nUpdateROW derive(ValorOrigenSensibilidad = ValorOrigen/$trm,\n\tpartitionBy('roundRobin', 2)) ~> TRMSensibilidad\nTRMSensibilidad sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tId as integer,\n\t\tEscenario as string,\n\t\tCuentaAuxiliar as string,\n\t\tCuentaObjeto as string,\n\t\tAnio as string,\n\t\tMes as string,\n\t\tLibro as string,\n\t\tCentroResponsabilidad as string,\n\t\tCodigoEmpresa as string,\n\t\tCodigoCompania as string,\n\t\tValorOrigen as double,\n\t\tValorOrigenSensibilidad as double\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['Id'],\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> SQLOutput"
 				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/AzureSqlTable')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MongoUpdate')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "DestinationDataset_fqs",
-								"type": "DatasetReference"
-							},
-							"name": "Mongo"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "DestinationDataset_fqs",
-								"type": "DatasetReference"
-							},
-							"name": "MontoTO"
-						}
-					],
-					"transformations": [
-						{
-							"name": "UpdateField"
-						},
-						{
-							"name": "TRM"
-						}
-					],
-					"script": "parameters{\n\tTRM as double (1.00)\n}\nsource(output(\n\t\tAnio as string,\n\t\tCentroResponsabilidad as string,\n\t\tCodigoCompania as string,\n\t\tCodigoEmpresa as string,\n\t\tCuentaAuxiliar as string,\n\t\tCuentaObjeto as string,\n\t\tEscenario as string,\n\t\tLibro as string,\n\t\tMes as string,\n\t\tValorOrigen as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'document',\n\tpartitionBy('roundRobin', 2)) ~> Mongo\nMongo alterRow(updateIf(true())) ~> UpdateField\nUpdateField derive(ValorOrigenSensibilidad = ValorOrigen/$TRM) ~> TRM\nTRM sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:true,\n\tformat: 'document',\n\tpartitionKey: ['_id'],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> MontoTO"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/DestinationDataset_fqs')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "dataflow1",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "1.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "dataflow1",
-								"type": "DataFlowReference",
-								"parameters": {
-									"trm": {
-										"value": "@pipeline().parameters.trmIN",
-										"type": "Expression"
-									}
-								},
-								"datasetParameters": {
-									"SQL": {},
-									"SQLOutput": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 16,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"trmIN": {
-						"type": "float",
-						"defaultValue": 1000
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/dataflow1')]"
 			]
 		}
 	]
