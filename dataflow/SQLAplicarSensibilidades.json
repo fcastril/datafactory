@@ -1,5 +1,5 @@
 {
-	"name": "dataflow1",
+	"name": "SQLAplicarSensibilidades",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -12,17 +12,13 @@
 					"name": "SQL"
 				}
 			],
-			"sinks": [
-				{
-					"name": "Mongo"
-				}
-			],
+			"sinks": [],
 			"transformations": [
 				{
 					"name": "Sensibilidadades"
 				}
 			],
-			"script": "source(output(\n\t\tId as integer,\n\t\tEscenario as string,\n\t\tCuentaAuxiliar as string,\n\t\tCuentaObjeto as string,\n\t\tAnio as string,\n\t\tMes as string,\n\t\tLibro as string,\n\t\tCentroResponsabilidad as string,\n\t\tCodigoEmpresa as string,\n\t\tCodigoCompania as string,\n\t\tValorOrigen as double,\n\t\tValorOrigenSensibilidad as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table',\n\tpartitionBy('roundRobin', 2)) ~> SQL\nSQL alterRow(updateIf(true()),\n\tpartitionBy('roundRobin', 2)) ~> Sensibilidadades\nSensibilidadades sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Mongo"
+			"script": "source(output(\n\t\tId as integer,\n\t\tEscenario as string,\n\t\tCuentaAuxiliar as string,\n\t\tCuentaObjeto as string,\n\t\tAnio as string,\n\t\tMes as string,\n\t\tLibro as string,\n\t\tCentroResponsabilidad as string,\n\t\tCodigoEmpresa as string,\n\t\tCodigoCompania as string,\n\t\tValorOrigen as double,\n\t\tValorOrigenSensibilidad as double\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table',\n\tpartitionBy('roundRobin', 2)) ~> SQL\nSQL alterRow(updateIf(true()),\n\tpartitionBy('roundRobin', 2)) ~> Sensibilidadades"
 		}
 	}
 }
