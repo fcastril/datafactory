@@ -2,14 +2,14 @@
 	"name": "DestinationDataset_9vz",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "MongoDb2021",
+			"referenceName": "MongoDbSpikeDatafactory",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
 		"type": "MongoDbV2Collection",
 		"schema": [],
 		"typeProperties": {
-			"collection": "spikeReales"
+			"collection": "spkeReales"
 		}
 	}
 }
