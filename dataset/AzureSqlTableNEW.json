@@ -1,0 +1,68 @@
+{
+	"name": "AzureSqlTableNEW",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SQLServer",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Escenario",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CuentaAuxiliar",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CuentaObjeto",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Anio",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Mes",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Libro",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CentroResponsabilidad",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CodigoEmpresa",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CodigoCompania",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ValorOrigen",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "ValorOrigenSensibilidad",
+				"type": "float",
+				"precision": 15
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "SpikeImportNew"
+		}
+	}
+}
