@@ -37,7 +37,8 @@
 						}
 					},
 					"sink": {
-						"type": "CosmosDbSqlApiSink",
+						"type": "MongoDbV2Sink",
+						"writeBatchTimeout": "00:30:00",
 						"writeBehavior": "insert"
 					},
 					"enableStaging": false,
@@ -50,88 +51,7 @@
 									"type": "String"
 								},
 								"sink": {
-									"path": "Escenario"
-								}
-							},
-							{
-								"source": {
-									"name": "CuentaAuxiliar",
-									"type": "String"
-								},
-								"sink": {
-									"path": "CuentaAuxiliar"
-								}
-							},
-							{
-								"source": {
-									"name": "CuentaObjeto",
-									"type": "String"
-								},
-								"sink": {
-									"path": "CuentaObjeto"
-								}
-							},
-							{
-								"source": {
-									"name": "Anio",
-									"type": "String"
-								},
-								"sink": {
-									"path": "Anio"
-								}
-							},
-							{
-								"source": {
-									"name": "Mes",
-									"type": "String"
-								},
-								"sink": {
-									"path": "Mes"
-								}
-							},
-							{
-								"source": {
-									"name": "Libro",
-									"type": "String"
-								},
-								"sink": {
-									"path": "Libro"
-								}
-							},
-							{
-								"source": {
-									"name": "CentroResponsabilidad",
-									"type": "String"
-								},
-								"sink": {
-									"path": "CentroResponsabilidad"
-								}
-							},
-							{
-								"source": {
-									"name": "CodigoEmpresa",
-									"type": "String"
-								},
-								"sink": {
-									"path": "CodigoEmpresa"
-								}
-							},
-							{
-								"source": {
-									"name": "CodigoCompania",
-									"type": "String"
-								},
-								"sink": {
-									"path": "CodigoCompania"
-								}
-							},
-							{
-								"source": {
-									"name": "ValorOrigen",
-									"type": "String"
-								},
-								"sink": {
-									"path": "ValorOrigen"
+									"path": "$"
 								}
 							}
 						]
@@ -140,6 +60,12 @@
 				"inputs": [
 					{
 						"referenceName": "SourceDataset_fqs",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_9vz",
 						"type": "DatasetReference"
 					}
 				]

@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "SourceDataset_9vz",
+						"referenceName": "AzureSqlTableNEW",
 						"type": "DatasetReference"
 					},
 					"name": "MontoTO"
@@ -29,7 +29,7 @@
 					"name": "TRM"
 				}
 			],
-			"script": "parameters{\n\tTRM as double (1.00)\n}\nsource(output(\n\t\tEscenario as string,\n\t\tCuentaAuxiliar as string,\n\t\tCuentaObjeto as string,\n\t\tAnio as string,\n\t\tMes as string,\n\t\tLibro as string,\n\t\tCentroResponsabilidad as string,\n\t\tCodigoEmpresa as string,\n\t\tCodigoCompania as string,\n\t\tValorOrigen as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tpartitionBy('roundRobin', 2)) ~> Mongo\nMongo alterRow(updateIf(true())) ~> UpdateField\nUpdateField derive(ValorOrigenSensibilidad = ValorOrigen/$TRM) ~> TRM\nTRM sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tEscenario as string,\n\t\tCuentaAuxiliar as string,\n\t\tCuentaObjeto as string,\n\t\tAnio as string,\n\t\tMes as string,\n\t\tLibro as string,\n\t\tCentroResponsabilidad as string,\n\t\tCodigoEmpresa as string,\n\t\tCodigoCompania as string,\n\t\tValorOrigen as string\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> MontoTO"
+			"script": "parameters{\n\tTRM as double (1.00)\n}\nsource(output(\n\t\tEscenario as string,\n\t\tCuentaAuxiliar as string,\n\t\tCuentaObjeto as string,\n\t\tAnio as string,\n\t\tMes as string,\n\t\tLibro as string,\n\t\tCentroResponsabilidad as string,\n\t\tCodigoEmpresa as string,\n\t\tCodigoCompania as string,\n\t\tValorOrigen as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tpartitionBy('roundRobin', 2)) ~> Mongo\nMongo alterRow(updateIf(true())) ~> UpdateField\nUpdateField derive(ValorOrigenSensibilidad = ValorOrigen) ~> TRM\nTRM sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tId as integer,\n\t\tEscenario as string,\n\t\tCuentaAuxiliar as string,\n\t\tCuentaObjeto as string,\n\t\tAnio as string,\n\t\tMes as string,\n\t\tLibro as string,\n\t\tCentroResponsabilidad as string,\n\t\tCodigoEmpresa as string,\n\t\tCodigoCompania as string,\n\t\tValorOrigen as double,\n\t\tValorOrigenSensibilidad as double\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> MontoTO"
 		}
 	}
 }
